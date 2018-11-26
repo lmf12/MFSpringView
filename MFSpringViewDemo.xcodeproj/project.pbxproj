@@ -14,6 +14,8 @@
 		E82B891721AAB2F500F096CB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E82B891521AAB2F500F096CB /* LaunchScreen.storyboard */; };
 		E82B891A21AAB2F500F096CB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E82B891921AAB2F500F096CB /* main.m */; };
 		E82B892321AAB94500F096CB /* MFSpringView.m in Sources */ = {isa = PBXBuildFile; fileRef = E82B892221AAB94500F096CB /* MFSpringView.m */; };
+		E8C31E8721ABC1E700472CC0 /* MFVertexAttribArrayBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = E8C31E8621ABC1E700472CC0 /* MFVertexAttribArrayBuffer.m */; };
+		E8C31E8921ABD2A800472CC0 /* girl.jpg in Resources */ = {isa = PBXBuildFile; fileRef = E8C31E8821ABD2A800472CC0 /* girl.jpg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,9 @@
 		E82B891921AAB2F500F096CB /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		E82B892121AAB94500F096CB /* MFSpringView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MFSpringView.h; sourceTree = "<group>"; };
 		E82B892221AAB94500F096CB /* MFSpringView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MFSpringView.m; sourceTree = "<group>"; };
+		E8C31E8521ABC1E700472CC0 /* MFVertexAttribArrayBuffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MFVertexAttribArrayBuffer.h; sourceTree = "<group>"; };
+		E8C31E8621ABC1E700472CC0 /* MFVertexAttribArrayBuffer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MFVertexAttribArrayBuffer.m; sourceTree = "<group>"; };
+		E8C31E8821ABD2A800472CC0 /* girl.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = girl.jpg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +67,7 @@
 		E82B890921AAB2F500F096CB /* MFSpringViewDemo */ = {
 			isa = PBXGroup;
 			children = (
+				E8C31E8821ABD2A800472CC0 /* girl.jpg */,
 				E82B890A21AAB2F500F096CB /* AppDelegate.h */,
 				E82B890B21AAB2F500F096CB /* AppDelegate.m */,
 				E82B890D21AAB2F500F096CB /* ViewController.h */,
@@ -80,6 +86,8 @@
 			children = (
 				E82B892121AAB94500F096CB /* MFSpringView.h */,
 				E82B892221AAB94500F096CB /* MFSpringView.m */,
+				E8C31E8521ABC1E700472CC0 /* MFVertexAttribArrayBuffer.h */,
+				E8C31E8621ABC1E700472CC0 /* MFVertexAttribArrayBuffer.m */,
 			);
 			path = MFSpringView;
 			sourceTree = "<group>";
@@ -143,6 +151,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E82B891721AAB2F500F096CB /* LaunchScreen.storyboard in Resources */,
+				E8C31E8921ABD2A800472CC0 /* girl.jpg in Resources */,
 				E82B891421AAB2F500F096CB /* Assets.xcassets in Resources */,
 				E82B891221AAB2F500F096CB /* Main.storyboard in Resources */,
 			);
@@ -159,6 +168,7 @@
 				E82B891A21AAB2F500F096CB /* main.m in Sources */,
 				E82B892321AAB94500F096CB /* MFSpringView.m in Sources */,
 				E82B890C21AAB2F500F096CB /* AppDelegate.m in Sources */,
+				E8C31E8721ABC1E700472CC0 /* MFVertexAttribArrayBuffer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

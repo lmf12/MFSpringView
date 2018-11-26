@@ -29,7 +29,7 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Yaz-2V-gwC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="uMO-9N-hQj"/>
                             <constraint firstItem="Yaz-2V-gwC" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="yJw-pb-nMl"/>

@@ -13,6 +13,10 @@
 @interface ViewController ()
 
 @property (weak, nonatomic) IBOutlet MFSpringView *springView;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *topLineSpace;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomLineSpace;
+@property (weak, nonatomic) IBOutlet UIButton *topButton;
+@property (weak, nonatomic) IBOutlet UIButton *bottomButton;
 
 @end
 
@@ -20,6 +24,41 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self setupButtons];
+    
+    self.topLineSpace.constant = 200;
+    self.bottomLineSpace.constant = 300;
+}
+
+#pragma mark - Private
+
+- (void)setupButtons {
+    self.topButton.layer.borderWidth = 1;
+    self.topButton.layer.borderColor = [[UIColor whiteColor] CGColor];
+    [self.topButton addGestureRecognizer:[[UIPanGestureRecognizer alloc]
+                                          initWithTarget:self
+                                          action:@selector(actionPanTop:)]];
+    
+    self.bottomButton.layer.borderWidth = 1;
+    self.bottomButton.layer.borderColor = [[UIColor whiteColor] CGColor];
+    [self.bottomButton addGestureRecognizer:[[UIPanGestureRecognizer alloc]
+                                             initWithTarget:self
+                                             action:@selector(actionPanBottom:)]];
+}
+
+#pragma mark - Action
+
+- (void)actionPanTop:(UIPanGestureRecognizer *)pan {
+    CGPoint translation = [pan translationInView:self.view];
+    self.topLineSpace.constant += translation.y;
+    [pan setTranslation:CGPointZero inView:self.view];
+}
+
+- (void)actionPanBottom:(UIPanGestureRecognizer *)pan {
+    CGPoint translation = [pan translationInView:self.view];
+    self.bottomLineSpace.constant += translation.y;
+    [pan setTranslation:CGPointZero inView:self.view];
 }
 
 #pragma mark - IBAction

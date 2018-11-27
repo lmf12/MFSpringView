@@ -38,17 +38,81 @@
                                     <action selector="sliderValueDidChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="2BO-DU-bpF"/>
                                 </connections>
                             </slider>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Uaf-8i-4Qm">
+                                <rect key="frame" x="0.0" y="93.5" width="375" height="1"/>
+                                <color key="backgroundColor" red="0.28463143110275269" green="0.77697616815567017" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I44-rM-Ksn" userLabel="lineTop">
+                                <rect key="frame" x="15" y="93.5" width="345" height="1"/>
+                                <color key="backgroundColor" red="0.28463143110275269" green="0.77697616815567017" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="zok-EB-2ZX"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0O9-uP-5Sq" userLabel="lineBottom">
+                                <rect key="frame" x="15" y="93.5" width="345" height="1"/>
+                                <color key="backgroundColor" red="0.28463143110275269" green="0.77697616815567017" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="Ae0-eS-LvX"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MT8-b9-iBi" userLabel="btnTop">
+                                <rect key="frame" x="335" y="74" width="40" height="40"/>
+                                <color key="backgroundColor" red="0.28463143110275269" green="0.77697616815567017" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="tec-oT-kBq"/>
+                                    <constraint firstAttribute="height" constant="40" id="uw5-kD-nQw"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WWT-fd-5UE" userLabel="btnBottom">
+                                <rect key="frame" x="335" y="74" width="40" height="40"/>
+                                <color key="backgroundColor" red="0.2868795698803196" green="0.77740182653276479" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="G9S-Xe-6U4"/>
+                                    <constraint firstAttribute="height" constant="40" id="gBg-Gf-M5y"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                    <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                </userDefinedRuntimeAttributes>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="0O9-uP-5Sq" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="5F3-Yb-8xX"/>
+                            <constraint firstItem="I44-rM-Ksn" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" constant="-30" id="6RA-gV-LjN"/>
+                            <constraint firstItem="Uaf-8i-4Qm" firstAttribute="top" secondItem="I44-rM-Ksn" secondAttribute="top" id="D8F-eX-ega"/>
+                            <constraint firstAttribute="trailing" secondItem="MT8-b9-iBi" secondAttribute="trailing" id="I3x-f0-dhy"/>
+                            <constraint firstAttribute="trailing" secondItem="WWT-fd-5UE" secondAttribute="trailing" id="KoP-dt-VNC"/>
                             <constraint firstItem="gkf-bX-Izl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="MCS-hh-fQS"/>
+                            <constraint firstItem="0O9-uP-5Sq" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" constant="-30" id="Rld-iW-yyc"/>
+                            <constraint firstItem="MT8-b9-iBi" firstAttribute="centerY" secondItem="I44-rM-Ksn" secondAttribute="centerY" id="TDO-ew-sIn"/>
                             <constraint firstItem="G0C-FY-7Jl" firstAttribute="top" secondItem="gkf-bX-Izl" secondAttribute="bottom" constant="20" id="Tw3-nU-uK2"/>
+                            <constraint firstAttribute="trailing" secondItem="Uaf-8i-4Qm" secondAttribute="trailing" id="V9Q-RX-y5v"/>
+                            <constraint firstItem="Uaf-8i-4Qm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="aUI-Mk-gZv"/>
+                            <constraint firstItem="WWT-fd-5UE" firstAttribute="centerY" secondItem="0O9-uP-5Sq" secondAttribute="centerY" id="fbS-Hh-Idk"/>
+                            <constraint firstItem="Uaf-8i-4Qm" firstAttribute="bottom" secondItem="0O9-uP-5Sq" secondAttribute="bottom" id="gS3-XD-wov"/>
+                            <constraint firstItem="I44-rM-Ksn" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="jmf-GU-a1u"/>
+                            <constraint firstItem="I44-rM-Ksn" firstAttribute="top" secondItem="Yaz-2V-gwC" secondAttribute="top" id="niP-45-rp1"/>
                             <constraint firstItem="Yaz-2V-gwC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="uMO-9N-hQj"/>
+                            <constraint firstItem="0O9-uP-5Sq" firstAttribute="top" secondItem="Yaz-2V-gwC" secondAttribute="top" id="ujj-eE-Jnf"/>
                             <constraint firstItem="Yaz-2V-gwC" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="yJw-pb-nMl"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="bottomButton" destination="WWT-fd-5UE" id="zFh-vT-kPi"/>
+                        <outlet property="bottomLineSpace" destination="ujj-eE-Jnf" id="ba0-ps-pCy"/>
                         <outlet property="springView" destination="Yaz-2V-gwC" id="0P6-HT-2Qf"/>
+                        <outlet property="topButton" destination="MT8-b9-iBi" id="XrL-Jx-qBW"/>
+                        <outlet property="topLineSpace" destination="niP-45-rp1" id="LKQ-9X-Fsd"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

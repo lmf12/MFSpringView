@@ -57,4 +57,13 @@
     glDrawArrays(mode, first, count);
 }
 
+- (void)updateDataWithAttribStride:(GLsizei)stride
+                  numberOfVertices:(GLsizei)count
+                              data:(const GLvoid *)data
+                             usage:(GLenum)usage {
+    self.stride = stride;
+    self.bufferSizeBytes = stride * count;
+    glBufferData(GL_ARRAY_BUFFER, _bufferSizeBytes, data, usage);
+}
+
 @end

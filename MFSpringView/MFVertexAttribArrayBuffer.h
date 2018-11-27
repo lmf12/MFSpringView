@@ -24,4 +24,9 @@
          startVertexIndex:(GLint)first
          numberOfVertices:(GLsizei)count;
 
+- (void)updateDataWithAttribStride:(GLsizei)stride
+                  numberOfVertices:(GLsizei)count
+                              data:(const GLvoid *)data
+                             usage:(GLenum)usage;
+
 @end

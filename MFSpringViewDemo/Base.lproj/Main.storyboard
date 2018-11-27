@@ -28,13 +28,28 @@
                                     <constraint firstAttribute="height" constant="480" id="In7-ot-0dG"/>
                                 </constraints>
                             </view>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="gkf-bX-Izl">
+                                <rect key="frame" x="85.5" y="617" width="204" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" id="Frm-Z4-IdZ"/>
+                                    <constraint firstAttribute="height" constant="30" id="t6D-D9-6us"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="sliderValueDidChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="2BO-DU-bpF"/>
+                                </connections>
+                            </slider>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstItem="gkf-bX-Izl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="MCS-hh-fQS"/>
+                            <constraint firstItem="G0C-FY-7Jl" firstAttribute="top" secondItem="gkf-bX-Izl" secondAttribute="bottom" constant="20" id="Tw3-nU-uK2"/>
                             <constraint firstItem="Yaz-2V-gwC" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="uMO-9N-hQj"/>
                             <constraint firstItem="Yaz-2V-gwC" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="yJw-pb-nMl"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="springView" destination="Yaz-2V-gwC" id="0P6-HT-2Qf"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>

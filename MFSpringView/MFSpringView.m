@@ -69,6 +69,31 @@ typedef struct {
                                                         data:self.vertices
                                                        usage:GL_STATIC_DRAW];
     [self display];
+    
+    if (self.springDelegate &&
+        [self.springDelegate respondsToSelector:@selector(springViewStretchAreaDidChanged:)]) {
+        [self.springDelegate springViewStretchAreaDidChanged:self];
+    }
+}
+
+- (CGFloat)textureTopY {
+    return (1 - self.vertices[0].positionCoord.y) / 2;
+}
+
+- (CGFloat)textureBottomY {
+    return (1 - self.vertices[7].positionCoord.y) / 2;
+}
+
+- (CGFloat)stretchAreaTopY {
+    return (1 - self.vertices[2].positionCoord.y) / 2;
+}
+
+- (CGFloat)stretchAreaBottomY {
+    return (1 - self.vertices[5].positionCoord.y) / 2;
+}
+
+- (CGFloat)textureHeight {
+    return self.textureBottomY - self.textureTopY;
 }
 
 #pragma mark - Private

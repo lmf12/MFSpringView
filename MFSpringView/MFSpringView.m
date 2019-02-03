@@ -24,7 +24,10 @@ typedef struct {
 @property (nonatomic, assign) SenceVertex *vertices;
 
 @property (nonatomic, strong) MFVertexAttribArrayBuffer *vertexAttribArrayBuffer;
-@property (nonatomic, assign) CGSize currentTextureSize;
+@property (nonatomic, assign) CGSize currentImageSize;
+
+@property (nonatomic, assign, readwrite) BOOL hasChange;
+@property (nonatomic, assign) CGFloat currentTextureWidth;
 
 @end
 
@@ -60,7 +63,9 @@ typedef struct {
 - (void)stretchingFromStartY:(CGFloat)startY
                       toEndY:(CGFloat)endY
                withNewHeight:(CGFloat)newHeight {
-    [self calculateOriginTextureCoordWithTextureSize:self.currentTextureSize
+    self.hasChange = YES;
+    
+    [self calculateOriginTextureCoordWithTextureSize:self.currentImageSize
                                               startY:startY
                                                 endY:endY
                                            newHeight:newHeight];
@@ -96,6 +101,75 @@ typedef struct {
     return self.textureBottomY - self.textureTopY;
 }
 
+- (UIImage *)createResult {
+    CGFloat screenScale = [[UIScreen mainScreen] scale];
+    CGFloat textureWidth = (self.vertices[0].positionCoord.x - self.vertices[1].positionCoord.x) / 2;
+    
+    int imageWidth = self.frame.size.width * textureWidth * screenScale;
+    int imageHeight = self.frame.size.height * [self textureHeight] * screenScale;
+    int dataLength = imageWidth * imageHeight * 4;
+    
+    GLubyte *data = (GLubyte *)malloc(dataLength * sizeof(GLubyte));
+    glPixelStorei(GL_PACK_ALIGNMENT, 4);
+    
+    glReadPixels((self.frame.size.width * screenScale - imageWidth) / 2, (self.frame.size.height * screenScale - imageHeight) / 2, imageWidth, imageHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);  //从内存中读取像素
+    
+    CGDataProviderRef ref = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
+    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+    CGImageRef iref = CGImageCreate(imageWidth, imageHeight, 8, 32, imageWidth * 4, colorspace, kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast, ref, NULL, YES, kCGRenderingIntentDefault);
+    
+    UIGraphicsBeginImageContext(CGSizeMake(imageWidth, imageHeight));
+    CGContextRef cgcontext = UIGraphicsGetCurrentContext();
+    CGContextSetBlendMode(cgcontext, kCGBlendModeCopy);
+    CGContextDrawImage(cgcontext, CGRectMake(0, 0, imageWidth, imageHeight), iref);
+    
+    CGImageRef imageMasked = CGBitmapContextCreateImage(cgcontext);
+    
+    UIGraphicsEndImageContext();
+    
+    UIImage * image = [UIImage imageWithCGImage:imageMasked];
+    
+    free(data);
+    CFRelease(ref);
+    CFRelease(colorspace);
+    CGImageRelease(iref);
+    CGImageRelease(imageMasked);
+    
+    return image;
+}
+
+- (void)updateImage:(UIImage *)image isNew:(BOOL)isNew {
+    self.hasChange = NO;
+    
+    NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft : @(YES)};
+    GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithCGImage:[image CGImage]
+                                                               options:options
+                                                                 error:NULL];
+    
+    self.baseEffect = [[GLKBaseEffect alloc] init];
+    self.baseEffect.texture2d0.name = textureInfo.name;
+    self.baseEffect.texture2d0.target = textureInfo.target;
+    
+    self.currentImageSize = image.size;
+    
+    if (isNew) { // 新的图片，重新计算纹理宽度
+        CGFloat ratio = (self.currentImageSize.height / self.currentImageSize.width) *
+        (self.bounds.size.width / self.bounds.size.height);
+        CGFloat textureHeight = MIN(ratio, kDefaultOriginTextureHeight);
+        self.currentTextureWidth = textureHeight / ratio;
+    }
+    
+    [self calculateOriginTextureCoordWithTextureSize:self.currentImageSize
+                                              startY:0
+                                                endY:0
+                                           newHeight:0];
+    [self.vertexAttribArrayBuffer updateDataWithAttribStride:sizeof(SenceVertex)
+                                            numberOfVertices:kVerticesCount
+                                                        data:self.vertices
+                                                       usage:GL_STATIC_DRAW];
+    [self display];
+}
+
 #pragma mark - Private
 
 - (void)commonInit {
@@ -106,22 +180,6 @@ typedef struct {
     self.delegate = self;
     [EAGLContext setCurrentContext:self.context];
     glClearColor(0, 0, 0, 0);
-    
-    UIImage *image = [UIImage imageNamed:@"girl.jpg"];
-    NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft : @(YES)};
-    GLKTextureInfo *textureInfo = [GLKTextureLoader textureWithCGImage:[image CGImage]
-                                                               options:options
-                                                                 error:NULL];
-    
-    self.baseEffect = [[GLKBaseEffect alloc] init];
-    self.baseEffect.texture2d0.name = textureInfo.name;
-    self.baseEffect.texture2d0.target = textureInfo.target;
-    
-    self.currentTextureSize = image.size;
-    [self calculateOriginTextureCoordWithTextureSize:self.currentTextureSize
-                                              startY:0
-                                                endY:0
-                                           newHeight:0];
     
     self.vertexAttribArrayBuffer = [[MFVertexAttribArrayBuffer alloc] initWithAttribStride:sizeof(SenceVertex) numberOfVertices:kVerticesCount data:self.vertices usage:GL_STATIC_DRAW];
 }
@@ -140,8 +198,8 @@ typedef struct {
                                          newHeight:(CGFloat)newHeight {
     CGFloat ratio = (size.height / size.width) *
                     (self.bounds.size.width / self.bounds.size.height);
-    CGFloat textureHeight = MIN(ratio, kDefaultOriginTextureHeight);
-    CGFloat textureWidth = textureHeight / ratio;
+    CGFloat textureWidth = self.currentTextureWidth;
+    CGFloat textureHeight = textureWidth * ratio;
     
     // 拉伸量
     CGFloat delta = newHeight - (endY -  startY);

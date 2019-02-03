@@ -19,6 +19,7 @@
 @interface MFSpringView : GLKView
 
 @property (nonatomic, weak) id <MFSpringViewDelegate> springDelegate;
+@property (nonatomic, assign, readonly) BOOL hasChange; // 拉伸区域是否被拉伸
 
 /**
  将区域拉伸或压缩为某个高度
@@ -65,5 +66,17 @@
  @return 纹理高度
  */
 - (CGFloat)textureHeight;
+
+/**
+ 获取当前的渲染结果
+ */
+- (UIImage *)createResult;
+
+/**
+ 更新图片
+
+ @param isNew 是否新的图片
+ */
+- (void)updateImage:(UIImage *)image isNew:(BOOL)isNew;
 
 @end

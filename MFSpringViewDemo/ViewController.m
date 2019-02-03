@@ -17,6 +17,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomLineSpace;
 @property (weak, nonatomic) IBOutlet UIButton *topButton;
 @property (weak, nonatomic) IBOutlet UIButton *bottomButton;
+@property (weak, nonatomic) IBOutlet UISlider *slider;
 
 @property (nonatomic, assign) CGFloat currentTop;  // 上方横线距离纹理顶部的高度
 @property (nonatomic, assign) CGFloat currentBottom;    // 下方横线距离纹理顶部的高度
@@ -30,6 +31,7 @@
     
     [self setupButtons];
     self.springView.springDelegate = self;
+    [self.springView updateImage:[UIImage imageNamed:@"girl.jpg"] isNew:YES];
     
     self.topLineSpace.constant = 200;
     self.bottomLineSpace.constant = 300;
@@ -60,21 +62,37 @@
 #pragma mark - Action
 
 - (void)actionPanTop:(UIPanGestureRecognizer *)pan {
+    if ([self.springView hasChange]) {
+        UIImage *image = [self.springView createResult];
+        [self.springView updateImage:image isNew:NO];
+        self.slider.value = 0.5f; // 重置滑杆位置
+    }
+    
     CGPoint translation = [pan translationInView:self.view];
     self.topLineSpace.constant = MIN(self.topLineSpace.constant + translation.y,
                                      self.bottomLineSpace.constant);
     CGFloat textureTop = self.springView.bounds.size.height * self.springView.textureTopY;
     self.topLineSpace.constant = MAX(self.topLineSpace.constant, textureTop);
     [pan setTranslation:CGPointZero inView:self.view];
+    
+    self.currentTop = [self stretchAreaYWithLineSpace:self.topLineSpace.constant];
 }
 
 - (void)actionPanBottom:(UIPanGestureRecognizer *)pan {
+    if ([self.springView hasChange]) {
+        UIImage *image = [self.springView createResult];
+        [self.springView updateImage:image isNew:NO];
+        self.slider.value = 0.5f; // 重置滑杆位置
+    }
+    
     CGPoint translation = [pan translationInView:self.view];
     self.bottomLineSpace.constant = MAX(self.bottomLineSpace.constant + translation.y,
                                         self.topLineSpace.constant);
     CGFloat textureBottom = self.springView.bounds.size.height * self.springView.textureBottomY;
     self.bottomLineSpace.constant = MIN(self.bottomLineSpace.constant, textureBottom);
     [pan setTranslation:CGPointZero inView:self.view];
+    
+    self.currentBottom = [self stretchAreaYWithLineSpace:self.bottomLineSpace.constant];
 }
 
 #pragma mark - IBAction

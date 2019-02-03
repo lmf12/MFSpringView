@@ -18,7 +18,7 @@ typedef struct {
     GLKVector2 textureCoord;
 } SenceVertex;
 
-@interface MFSpringView () <GLKViewDelegate>
+@interface MFSpringView () <MFGLKViewDelegate>
 
 @property (nonatomic, strong) GLKBaseEffect *baseEffect;
 @property (nonatomic, assign) SenceVertex *vertices;
@@ -181,9 +181,9 @@ typedef struct {
     self.vertices[7].textureCoord = GLKVector2Make(0, 0);
 }
 
-#pragma mark - GLKViewDelegate
+#pragma mark - MFGLKViewDelegate
 
-- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
+- (void)glkView:(MFGLKView *)view drawInRect:(CGRect)rect {
     [self.baseEffect prepareToDraw];
     
     glClear(GL_COLOR_BUFFER_BIT);

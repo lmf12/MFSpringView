@@ -6,7 +6,7 @@
 //  Copyright © 2018年 Lyman Li. All rights reserved.
 //
 
-#import "MFGLKView.h"
+#import <GLKit/GLKit.h>
 
 @class MFSpringView;
 
@@ -16,7 +16,7 @@
 
 @end
 
-@interface MFSpringView : MFGLKView
+@interface MFSpringView : GLKView
 
 @property (nonatomic, weak) id <MFSpringViewDelegate> springDelegate;
 

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E8144C5E2227805700C45F65 /* spring.vsh in Resources */ = {isa = PBXBuildFile; fileRef = E8144C5C2227805700C45F65 /* spring.vsh */; };
+		E8144C5F2227805700C45F65 /* spring.fsh in Resources */ = {isa = PBXBuildFile; fileRef = E8144C5D2227805700C45F65 /* spring.fsh */; };
+		E8144C62222780C900C45F65 /* MFShaderHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = E8144C61222780C900C45F65 /* MFShaderHelper.m */; };
 		E82B890C21AAB2F500F096CB /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E82B890B21AAB2F500F096CB /* AppDelegate.m */; };
 		E82B890F21AAB2F500F096CB /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E82B890E21AAB2F500F096CB /* ViewController.m */; };
 		E82B891221AAB2F500F096CB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E82B891021AAB2F500F096CB /* Main.storyboard */; };
@@ -19,6 +22,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E8144C5C2227805700C45F65 /* spring.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = spring.vsh; sourceTree = "<group>"; };
+		E8144C5D2227805700C45F65 /* spring.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = spring.fsh; sourceTree = "<group>"; };
+		E8144C60222780C800C45F65 /* MFShaderHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MFShaderHelper.h; sourceTree = "<group>"; };
+		E8144C61222780C900C45F65 /* MFShaderHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MFShaderHelper.m; sourceTree = "<group>"; };
 		E82B890721AAB2F500F096CB /* MFSpringViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MFSpringViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E82B890A21AAB2F500F096CB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E82B890B21AAB2F500F096CB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -84,6 +91,10 @@
 		E82B892021AAB92C00F096CB /* MFSpringView */ = {
 			isa = PBXGroup;
 			children = (
+				E8144C5D2227805700C45F65 /* spring.fsh */,
+				E8144C5C2227805700C45F65 /* spring.vsh */,
+				E8144C60222780C800C45F65 /* MFShaderHelper.h */,
+				E8144C61222780C900C45F65 /* MFShaderHelper.m */,
 				E82B892121AAB94500F096CB /* MFSpringView.h */,
 				E82B892221AAB94500F096CB /* MFSpringView.m */,
 				E8C31E8521ABC1E700472CC0 /* MFVertexAttribArrayBuffer.h */,
@@ -152,8 +163,10 @@
 			files = (
 				E82B891721AAB2F500F096CB /* LaunchScreen.storyboard in Resources */,
 				E8C31E8921ABD2A800472CC0 /* girl.jpg in Resources */,
+				E8144C5F2227805700C45F65 /* spring.fsh in Resources */,
 				E82B891421AAB2F500F096CB /* Assets.xcassets in Resources */,
 				E82B891221AAB2F500F096CB /* Main.storyboard in Resources */,
+				E8144C5E2227805700C45F65 /* spring.vsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -169,6 +182,7 @@
 				E82B892321AAB94500F096CB /* MFSpringView.m in Sources */,
 				E82B890C21AAB2F500F096CB /* AppDelegate.m in Sources */,
 				E8C31E8721ABC1E700472CC0 /* MFVertexAttribArrayBuffer.m in Sources */,
+				E8144C62222780C900C45F65 /* MFShaderHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

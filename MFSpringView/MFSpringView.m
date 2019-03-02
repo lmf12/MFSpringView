@@ -6,6 +6,7 @@
 //  Copyright © 2018年 Lyman Li. All rights reserved.
 //
 
+#import "MFShaderHelper.h"
 #import "MFVertexAttribArrayBuffer.h"
 
 #import "MFSpringView.h"
@@ -138,6 +139,22 @@ typedef struct {
     return image;
 }
 
+- (void)updateTexture {
+    [self resetTextureWidthOriginWidth:self.currentImageSize.width originHeight:self.currentImageSize.height topY:0.1 bottomY:0.2 newHeight:0.2];
+    
+    self.hasChange = NO;
+    
+    [self calculateOriginTextureCoordWithTextureSize:self.currentImageSize
+                                              startY:0
+                                                endY:0
+                                           newHeight:0];
+    [self.vertexAttribArrayBuffer updateDataWithAttribStride:sizeof(SenceVertex)
+                                            numberOfVertices:kVerticesCount
+                                                        data:self.vertices
+                                                       usage:GL_STATIC_DRAW];
+    [self display];
+}
+
 - (void)updateImage:(UIImage *)image isNew:(BOOL)isNew {
     self.hasChange = NO;
     
@@ -237,6 +254,99 @@ typedef struct {
     self.vertices[6].textureCoord = GLKVector2Make(1, 0);
     self.vertices[7].positionCoord = pointLB;
     self.vertices[7].textureCoord = GLKVector2Make(0, 0);
+}
+
+
+/**
+ 根据当前屏幕上的显示，来重新创建纹理
+
+ @param originWidth 纹理的原始实际宽度
+ @param originHeight 纹理的原始实际高度
+ @param topY 0 ~ 1，拉伸区域的顶边的纵坐标
+ @param bottomY 0 ~ 1，拉伸区域的底边的纵坐标
+ @param newHeight 0 ~ 1，拉伸区域的新高度
+ */
+- (void)resetTextureWidthOriginWidth:(CGFloat)originWidth
+                        originHeight:(CGFloat)originHeight
+                                topY:(CGFloat)topY
+                             bottomY:(CGFloat)bottomY
+                           newHeight:(CGFloat)newHeight {
+    // 新的纹理尺寸
+    GLsizei newTextureWidth = originWidth;
+    GLsizei newTextureHeight = originHeight * (newHeight - (bottomY - topY)) + originHeight;
+    
+    // 重置图片的尺寸
+    self.currentImageSize = CGSizeMake(newTextureWidth, newTextureHeight);
+    
+    // 创建顶点数组
+    SenceVertex *tmpVertices = malloc(sizeof(SenceVertex) * kVerticesCount);
+    tmpVertices[0] = (SenceVertex){{-1, 1, 0}, {0, 1}};
+    tmpVertices[1] = (SenceVertex){{1, 1, 0}, {1, 1}};
+    tmpVertices[2] = (SenceVertex){{-1, -2 * topY + 1, 0}, {0, 1 - topY}};
+    tmpVertices[3] = (SenceVertex){{1, -2 * topY + 1, 0}, {1, 1 - topY}};
+    tmpVertices[4] = (SenceVertex){{-1, -2 * bottomY + 1, 0}, {0, 1 - bottomY}};
+    tmpVertices[5] = (SenceVertex){{1, -2 * bottomY + 1, 0}, {1, 1 - bottomY}};
+    tmpVertices[6] = (SenceVertex){{-1, -1, 0}, {0, 0}};
+    tmpVertices[7] = (SenceVertex){{1, -1, 0}, {1, 0}};
+    
+    
+    /// 下面开始渲染到纹理的流程
+    // 生成帧缓存，挂载渲染缓存
+    GLuint frameBuffer;
+    GLuint texture;
+    
+    glGenFramebuffers(1, &frameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+    
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, newTextureWidth, newTextureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+    
+    // 设置视口尺寸
+    glViewport(0, 0, newTextureWidth, newTextureHeight);
+    
+    // 获取着色器程序
+    GLuint program = [MFShaderHelper programWithShaderName:@"spring"];
+    glUseProgram(program);
+    
+    // 获取参数
+    GLuint positionSlot = glGetAttribLocation(program, "Position");
+    GLuint textureSlot = glGetUniformLocation(program, "Texture");
+    GLuint textureCoordsSlot = glGetAttribLocation(program, "TextureCoords");
+    
+    // 传值
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, self.baseEffect.texture2d0.name);
+    glUniform1i(textureSlot, 0);
+    
+    MFVertexAttribArrayBuffer *vbo = [[MFVertexAttribArrayBuffer alloc] initWithAttribStride:sizeof(SenceVertex) numberOfVertices:kVerticesCount data:tmpVertices usage:GL_STATIC_DRAW];
+    
+    [vbo prepareToDrawWithAttrib:positionSlot numberOfCoordinates:3 attribOffset:offsetof(SenceVertex, positionCoord) shouldEnable:YES];
+    [vbo prepareToDrawWithAttrib:textureCoordsSlot numberOfCoordinates:2 attribOffset:offsetof(SenceVertex, textureCoord) shouldEnable:YES];
+    
+    // 绘制
+    [vbo drawArrayWithMode:GL_TRIANGLE_STRIP startVertexIndex:0 numberOfVertices:kVerticesCount];
+    
+    // 将生成的新纹理 ID 赋值给 baseEffest
+    if (self.baseEffect.texture2d0.name != 0) {
+        GLuint textureName = self.baseEffect.texture2d0.name;
+        glDeleteTextures(1, &textureName);
+    }
+    self.baseEffect.texture2d0.name = texture;
+    
+    // 解绑缓存
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    // 删除缓存
+    glDeleteBuffers(1, &frameBuffer);
+    // 释放顶点数组
+    free(tmpVertices);
 }
 
 #pragma mark - GLKViewDelegate

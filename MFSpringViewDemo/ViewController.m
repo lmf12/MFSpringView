@@ -63,8 +63,9 @@
 
 - (void)actionPanTop:(UIPanGestureRecognizer *)pan {
     if ([self.springView hasChange]) {
-        UIImage *image = [self.springView createResult];
-        [self.springView updateImage:image isNew:NO];
+//        UIImage *image = [self.springView createResult];
+//        [self.springView updateImage:image isNew:NO];
+        [self.springView updateTexture];
         self.slider.value = 0.5f; // 重置滑杆位置
     }
     
@@ -80,8 +81,9 @@
 
 - (void)actionPanBottom:(UIPanGestureRecognizer *)pan {
     if ([self.springView hasChange]) {
-        UIImage *image = [self.springView createResult];
-        [self.springView updateImage:image isNew:NO];
+//        UIImage *image = [self.springView createResult];
+//        [self.springView updateImage:image isNew:NO];
+        [self.springView updateTexture];
         self.slider.value = 0.5f; // 重置滑杆位置
     }
     

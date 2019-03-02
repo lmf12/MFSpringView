@@ -73,6 +73,11 @@
 - (UIImage *)createResult;
 
 /**
+ 根据当前的拉伸结果来重新生成纹理
+ */
+- (void)updateTexture;
+
+/**
  更新图片
 
  @param isNew 是否新的图片

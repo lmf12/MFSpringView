@@ -102,6 +102,10 @@
                             withNewHeight:newHeight];
 }
 
+- (IBAction)saveAction:(id)sender {
+    [self.springView createResult];
+}
+
 #pragma mark - MFSpringViewDelegate
 
 - (void)springViewStretchAreaDidChanged:(MFSpringView *)springView {

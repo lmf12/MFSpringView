@@ -30,6 +30,10 @@ typedef struct {
 @property (nonatomic, assign, readwrite) BOOL hasChange;
 @property (nonatomic, assign) CGFloat currentTextureWidth;
 
+// 临时创建的帧缓存和纹理缓存
+@property (nonatomic, assign) GLuint tmpFrameBuffer;
+@property (nonatomic, assign) GLuint tmpTexture;
+
 // 用于重新绘制纹理
 @property (nonatomic, assign) CGFloat currentTextureStartY;
 @property (nonatomic, assign) CGFloat currentTextureEndY;
@@ -45,6 +49,15 @@ typedef struct {
     }
     if (_vertices) {
         free(_vertices);
+        _vertices = nil;
+    }
+    if (_tmpFrameBuffer) {
+        glDeleteFramebuffers(1, &_tmpFrameBuffer);
+        _tmpFrameBuffer = 0;
+    }
+    if (_tmpTexture) {
+        glDeleteTextures(1, &_tmpTexture);
+        _tmpTexture = 0;
     }
 }
 
@@ -108,48 +121,35 @@ typedef struct {
 }
 
 - (UIImage *)createResult {
-    CGFloat screenScale = [[UIScreen mainScreen] scale];
-    CGFloat textureWidth = (self.vertices[0].positionCoord.x - self.vertices[1].positionCoord.x) / 2;
+    [self resetTextureWithOriginWidth:self.currentImageSize.width
+                         originHeight:self.currentImageSize.height
+                                 topY:self.currentTextureStartY
+                              bottomY:self.currentTextureEndY
+                            newHeight:self.currentNewHeight];
     
-    int imageWidth = self.frame.size.width * textureWidth * screenScale;
-    int imageHeight = self.frame.size.height * [self textureHeight] * screenScale;
-    int dataLength = imageWidth * imageHeight * 4;
-    
-    GLubyte *data = (GLubyte *)malloc(dataLength * sizeof(GLubyte));
-    glPixelStorei(GL_PACK_ALIGNMENT, 4);
-    
-    glReadPixels((self.frame.size.width * screenScale - imageWidth) / 2, (self.frame.size.height * screenScale - imageHeight) / 2, imageWidth, imageHeight, GL_RGBA, GL_UNSIGNED_BYTE, data);  //从内存中读取像素
-    
-    CGDataProviderRef ref = CGDataProviderCreateWithData(NULL, data, dataLength, NULL);
-    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
-    CGImageRef iref = CGImageCreate(imageWidth, imageHeight, 8, 32, imageWidth * 4, colorspace, kCGBitmapByteOrder32Big | kCGImageAlphaPremultipliedLast, ref, NULL, YES, kCGRenderingIntentDefault);
-    
-    UIGraphicsBeginImageContext(CGSizeMake(imageWidth, imageHeight));
-    CGContextRef cgcontext = UIGraphicsGetCurrentContext();
-    CGContextSetBlendMode(cgcontext, kCGBlendModeCopy);
-    CGContextDrawImage(cgcontext, CGRectMake(0, 0, imageWidth, imageHeight), iref);
-    
-    CGImageRef imageMasked = CGBitmapContextCreateImage(cgcontext);
-    
-    UIGraphicsEndImageContext();
-    
-    UIImage * image = [UIImage imageWithCGImage:imageMasked];
-    
-    free(data);
-    CFRelease(ref);
-    CFRelease(colorspace);
-    CGImageRelease(iref);
-    CGImageRelease(imageMasked);
+    glBindFramebuffer(GL_FRAMEBUFFER, self.tmpFrameBuffer);
+    CGSize imageSize = [self newImageSize];
+    UIImage *image = [self imageFromTextureWithWidth:imageSize.width height:imageSize.height];
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
     
     return image;
 }
 
 - (void)updateTexture {
-    [self resetTextureWidthOriginWidth:self.currentImageSize.width
-                          originHeight:self.currentImageSize.height
-                                  topY:self.currentTextureStartY
-                               bottomY:self.currentTextureEndY
-                             newHeight:self.currentNewHeight];
+    [self resetTextureWithOriginWidth:self.currentImageSize.width
+                         originHeight:self.currentImageSize.height
+                                 topY:self.currentTextureStartY
+                              bottomY:self.currentTextureEndY
+                            newHeight:self.currentNewHeight];
+    // 设置新的纹理
+    if (self.baseEffect.texture2d0.name != 0) {
+        GLuint textureName = self.baseEffect.texture2d0.name;
+        glDeleteTextures(1, &textureName);
+    }
+    self.baseEffect.texture2d0.name = self.tmpTexture;
+    
+    // 重置图片的尺寸
+    self.currentImageSize = [self newImageSize];
     
     self.hasChange = NO;
     
@@ -174,7 +174,6 @@ typedef struct {
     
     self.baseEffect = [[GLKBaseEffect alloc] init];
     self.baseEffect.texture2d0.name = textureInfo.name;
-    self.baseEffect.texture2d0.target = textureInfo.target;
     
     self.currentImageSize = image.size;
 
@@ -278,11 +277,11 @@ typedef struct {
  @param bottomY 0 ~ 1，拉伸区域的底边的纵坐标
  @param newHeight 0 ~ 1，拉伸区域的新高度
  */
-- (void)resetTextureWidthOriginWidth:(CGFloat)originWidth
-                        originHeight:(CGFloat)originHeight
-                                topY:(CGFloat)topY
-                             bottomY:(CGFloat)bottomY
-                           newHeight:(CGFloat)newHeight {
+- (void)resetTextureWithOriginWidth:(CGFloat)originWidth
+                       originHeight:(CGFloat)originHeight
+                               topY:(CGFloat)topY
+                            bottomY:(CGFloat)bottomY
+                          newHeight:(CGFloat)newHeight {
     // 新的纹理尺寸
     GLsizei newTextureWidth = originWidth;
     GLsizei newTextureHeight = originHeight * (newHeight - (bottomY - topY)) + originHeight;
@@ -290,8 +289,6 @@ typedef struct {
     // 高度变化百分比
     CGFloat heightScale = newTextureHeight / originHeight;
     
-    // 重置图片的尺寸
-    self.currentImageSize = CGSizeMake(newTextureWidth, newTextureHeight);
     // 在新的纹理坐标下，重新计算topY、bottomY
     CGFloat newTopY = topY / heightScale;
     CGFloat newBottomY = (topY + newHeight) / heightScale;
@@ -351,20 +348,60 @@ typedef struct {
     
     // 绘制
     [vbo drawArrayWithMode:GL_TRIANGLE_STRIP startVertexIndex:0 numberOfVertices:kVerticesCount];
-    
-    // 将生成的新纹理 ID 赋值给 baseEffest
-    if (self.baseEffect.texture2d0.name != 0) {
-        GLuint textureName = self.baseEffect.texture2d0.name;
-        glDeleteTextures(1, &textureName);
-    }
-    self.baseEffect.texture2d0.name = texture;
-    
+
     // 解绑缓存
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // 删除缓存
-    glDeleteBuffers(1, &frameBuffer);
     // 释放顶点数组
     free(tmpVertices);
+    
+    self.tmpTexture = texture;
+    self.tmpFrameBuffer = frameBuffer;
+}
+
+// 返回某个纹理对应的 UIImage，调用前先绑定对应的帧缓存
+- (UIImage *)imageFromTextureWithWidth:(int)width height:(int)height {
+    int size = width * height * 4;
+    GLubyte *buffer = malloc(size);
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer, size, NULL);
+    int bitsPerComponent = 8;
+    int bitsPerPixel = 32;
+    int bytesPerRow = 4 * width;
+    CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
+    CGBitmapInfo bitmapInfo = kCGBitmapByteOrderDefault;
+    CGColorRenderingIntent renderingIntent = kCGRenderingIntentDefault;
+    CGImageRef imageRef = CGImageCreate(width, height, bitsPerComponent, bitsPerPixel, bytesPerRow, colorSpaceRef, bitmapInfo, provider, NULL, NO, renderingIntent);
+    
+    // 此时的 imageRef 是上下颠倒的，调用 CG 的方法重新绘制一遍，刚好翻转过来
+    UIGraphicsBeginImageContext(CGSizeMake(width, height));
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextDrawImage(context, CGRectMake(0, 0, width, height), imageRef);
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    free(buffer);
+    return image;
+}
+
+// 根据当前屏幕的尺寸，返回新的图片尺寸
+- (CGSize)newImageSize {
+    CGFloat newImageHeight = self.currentImageSize.height * ((self.currentNewHeight - (self.currentTextureEndY - self.currentTextureStartY)) + 1);
+    return CGSizeMake(self.currentImageSize.width, newImageHeight);
+}
+
+#pragma mark - Custom Accessor
+- (void)setTmpFrameBuffer:(GLuint)tmpFrameBuffer {
+    if (_tmpFrameBuffer) {
+        glDeleteFramebuffers(1, &_tmpFrameBuffer);
+    }
+    _tmpFrameBuffer = tmpFrameBuffer;
+}
+
+- (void)setTmpTexture:(GLuint)tmpTexture {
+    if (_tmpTexture) {
+        glDeleteTextures(1, &_tmpTexture);
+    }
+    _tmpTexture = tmpTexture;
 }
 
 #pragma mark - GLKViewDelegate

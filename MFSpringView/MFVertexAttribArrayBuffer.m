@@ -63,7 +63,8 @@
                              usage:(GLenum)usage {
     self.stride = stride;
     self.bufferSizeBytes = stride * count;
-    glBufferData(GL_ARRAY_BUFFER, _bufferSizeBytes, data, usage);
+    glBindBuffer(GL_ARRAY_BUFFER, self.glName);
+    glBufferData(GL_ARRAY_BUFFER, self.bufferSizeBytes, data, usage);
 }
 
 @end

@@ -30,6 +30,11 @@ typedef struct {
 @property (nonatomic, assign, readwrite) BOOL hasChange;
 @property (nonatomic, assign) CGFloat currentTextureWidth;
 
+// 用于重新绘制纹理
+@property (nonatomic, assign) CGFloat currentTextureStartY;
+@property (nonatomic, assign) CGFloat currentTextureEndY;
+@property (nonatomic, assign) CGFloat currentNewHeight;
+
 @end
 
 @implementation MFSpringView
@@ -140,7 +145,11 @@ typedef struct {
 }
 
 - (void)updateTexture {
-    [self resetTextureWidthOriginWidth:self.currentImageSize.width originHeight:self.currentImageSize.height topY:0.1 bottomY:0.2 newHeight:0.2];
+    [self resetTextureWidthOriginWidth:self.currentImageSize.width
+                          originHeight:self.currentImageSize.height
+                                  topY:self.currentTextureStartY
+                               bottomY:self.currentTextureEndY
+                             newHeight:self.currentNewHeight];
     
     self.hasChange = NO;
     
@@ -155,7 +164,7 @@ typedef struct {
     [self display];
 }
 
-- (void)updateImage:(UIImage *)image isNew:(BOOL)isNew {
+- (void)updateImage:(UIImage *)image {
     self.hasChange = NO;
     
     NSDictionary *options = @{GLKTextureLoaderOriginBottomLeft : @(YES)};
@@ -168,13 +177,11 @@ typedef struct {
     self.baseEffect.texture2d0.target = textureInfo.target;
     
     self.currentImageSize = image.size;
-    
-    if (isNew) { // 新的图片，重新计算纹理宽度
-        CGFloat ratio = (self.currentImageSize.height / self.currentImageSize.width) *
-        (self.bounds.size.width / self.bounds.size.height);
-        CGFloat textureHeight = MIN(ratio, kDefaultOriginTextureHeight);
-        self.currentTextureWidth = textureHeight / ratio;
-    }
+
+    CGFloat ratio = (self.currentImageSize.height / self.currentImageSize.width) *
+    (self.bounds.size.width / self.bounds.size.height);
+    CGFloat textureHeight = MIN(ratio, kDefaultOriginTextureHeight);
+    self.currentTextureWidth = textureHeight / ratio;
     
     [self calculateOriginTextureCoordWithTextureSize:self.currentImageSize
                                               startY:0
@@ -219,21 +226,21 @@ typedef struct {
     CGFloat textureHeight = textureWidth * ratio;
     
     // 拉伸量
-    CGFloat delta = newHeight - (endY -  startY);
+    CGFloat delta = (newHeight - (endY -  startY)) * textureHeight;
     
     // 纹理的顶点
-    GLKVector3 pointLT = {-textureWidth, textureHeight + delta / 2, 0};  // 左上角
-    GLKVector3 pointRT = {textureWidth, textureHeight + delta / 2, 0};  // 右上角
-    GLKVector3 pointLB = {-textureWidth, -textureHeight - delta / 2, 0};  // 左下角
-    GLKVector3 pointRB = {textureWidth, -textureHeight - delta / 2, 0};  // 右下角
+    GLKVector3 pointLT = {-textureWidth, textureHeight + delta, 0};  // 左上角
+    GLKVector3 pointRT = {textureWidth, textureHeight + delta, 0};  // 右上角
+    GLKVector3 pointLB = {-textureWidth, -textureHeight - delta, 0};  // 左下角
+    GLKVector3 pointRB = {textureWidth, -textureHeight - delta, 0};  // 右下角
     
     // 中间矩形区域的顶点
     CGFloat startYCoord = MIN(-2 * textureHeight * startY + textureHeight, textureHeight);
     CGFloat endYCoord = MAX(-2 * textureHeight * endY + textureHeight, -textureHeight);
-    GLKVector3 centerPointLT = {-textureWidth, startYCoord + delta / 2, 0};  // 左上角
-    GLKVector3 centerPointRT = {textureWidth, startYCoord + delta / 2, 0};  // 右上角
-    GLKVector3 centerPointLB = {-textureWidth, endYCoord - delta / 2, 0};  // 左下角
-    GLKVector3 centerPointRB = {textureWidth, endYCoord - delta / 2, 0};  // 右下角
+    GLKVector3 centerPointLT = {-textureWidth, startYCoord + delta, 0};  // 左上角
+    GLKVector3 centerPointRT = {textureWidth, startYCoord + delta, 0};  // 右上角
+    GLKVector3 centerPointLB = {-textureWidth, endYCoord - delta, 0};  // 左下角
+    GLKVector3 centerPointRB = {textureWidth, endYCoord - delta, 0};  // 右下角
     
     // 纹理的上面两个顶点
     self.vertices[0].positionCoord = pointRT;
@@ -254,6 +261,11 @@ typedef struct {
     self.vertices[6].textureCoord = GLKVector2Make(1, 0);
     self.vertices[7].positionCoord = pointLB;
     self.vertices[7].textureCoord = GLKVector2Make(0, 0);
+    
+    // 保存临时值
+    self.currentTextureStartY = startY;
+    self.currentTextureEndY = endY;
+    self.currentNewHeight = newHeight;
 }
 
 
@@ -275,17 +287,23 @@ typedef struct {
     GLsizei newTextureWidth = originWidth;
     GLsizei newTextureHeight = originHeight * (newHeight - (bottomY - topY)) + originHeight;
     
+    // 高度变化百分比
+    CGFloat heightScale = newTextureHeight / originHeight;
+    
     // 重置图片的尺寸
     self.currentImageSize = CGSizeMake(newTextureWidth, newTextureHeight);
+    // 在新的纹理坐标下，重新计算topY、bottomY
+    CGFloat newTopY = topY / heightScale;
+    CGFloat newBottomY = (topY + newHeight) / heightScale;
     
     // 创建顶点数组
     SenceVertex *tmpVertices = malloc(sizeof(SenceVertex) * kVerticesCount);
     tmpVertices[0] = (SenceVertex){{-1, 1, 0}, {0, 1}};
     tmpVertices[1] = (SenceVertex){{1, 1, 0}, {1, 1}};
-    tmpVertices[2] = (SenceVertex){{-1, -2 * topY + 1, 0}, {0, 1 - topY}};
-    tmpVertices[3] = (SenceVertex){{1, -2 * topY + 1, 0}, {1, 1 - topY}};
-    tmpVertices[4] = (SenceVertex){{-1, -2 * bottomY + 1, 0}, {0, 1 - bottomY}};
-    tmpVertices[5] = (SenceVertex){{1, -2 * bottomY + 1, 0}, {1, 1 - bottomY}};
+    tmpVertices[2] = (SenceVertex){{-1, -2 * newTopY + 1, 0}, {0, 1 - topY}};
+    tmpVertices[3] = (SenceVertex){{1, -2 * newTopY + 1, 0}, {1, 1 - topY}};
+    tmpVertices[4] = (SenceVertex){{-1, -2 * newBottomY + 1, 0}, {0, 1 - bottomY}};
+    tmpVertices[5] = (SenceVertex){{1, -2 * newBottomY + 1, 0}, {1, 1 - bottomY}};
     tmpVertices[6] = (SenceVertex){{-1, -1, 0}, {0, 0}};
     tmpVertices[7] = (SenceVertex){{1, -1, 0}, {1, 0}};
     

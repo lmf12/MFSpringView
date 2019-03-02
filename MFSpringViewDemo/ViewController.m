@@ -31,7 +31,7 @@
     
     [self setupButtons];
     self.springView.springDelegate = self;
-    [self.springView updateImage:[UIImage imageNamed:@"girl.jpg"] isNew:YES];
+    [self.springView updateImage:[UIImage imageNamed:@"girl.jpg"]];
     
     self.topLineSpace.constant = 200;
     self.bottomLineSpace.constant = 300;
@@ -63,8 +63,6 @@
 
 - (void)actionPanTop:(UIPanGestureRecognizer *)pan {
     if ([self.springView hasChange]) {
-//        UIImage *image = [self.springView createResult];
-//        [self.springView updateImage:image isNew:NO];
         [self.springView updateTexture];
         self.slider.value = 0.5f; // 重置滑杆位置
     }
@@ -81,8 +79,6 @@
 
 - (void)actionPanBottom:(UIPanGestureRecognizer *)pan {
     if ([self.springView hasChange]) {
-//        UIImage *image = [self.springView createResult];
-//        [self.springView updateImage:image isNew:NO];
         [self.springView updateTexture];
         self.slider.value = 0.5f; // 重置滑杆位置
     }

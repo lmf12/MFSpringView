@@ -79,9 +79,7 @@
 
 /**
  更新图片
-
- @param isNew 是否新的图片
  */
-- (void)updateImage:(UIImage *)image isNew:(BOOL)isNew;
+- (void)updateImage:(UIImage *)image;
 
 @end

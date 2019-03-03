@@ -397,13 +397,6 @@ typedef struct {
     _tmpFrameBuffer = tmpFrameBuffer;
 }
 
-- (void)setTmpTexture:(GLuint)tmpTexture {
-    if (_tmpTexture) {
-        glDeleteTextures(1, &_tmpTexture);
-    }
-    _tmpTexture = tmpTexture;
-}
-
 #pragma mark - GLKViewDelegate
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {

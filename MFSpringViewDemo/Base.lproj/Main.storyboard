@@ -88,7 +88,11 @@
                                 </userDefinedRuntimeAttributes>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6LC-iq-jVI">
-                                <rect key="frame" x="15" y="617" width="32" height="30"/>
+                                <rect key="frame" x="6" y="607" width="50" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="XXZ-tA-QAZ"/>
+                                    <constraint firstAttribute="height" constant="50" id="ex9-FB-rqJ"/>
+                                </constraints>
                                 <state key="normal" title="save"/>
                                 <connections>
                                     <action selector="saveAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="6St-uv-WFA"/>
@@ -104,7 +108,7 @@
                             <constraint firstAttribute="trailing" secondItem="MT8-b9-iBi" secondAttribute="trailing" id="I3x-f0-dhy"/>
                             <constraint firstAttribute="trailing" secondItem="WWT-fd-5UE" secondAttribute="trailing" id="KoP-dt-VNC"/>
                             <constraint firstItem="gkf-bX-Izl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="MCS-hh-fQS"/>
-                            <constraint firstItem="6LC-iq-jVI" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="15" id="NDb-SL-Mpt"/>
+                            <constraint firstItem="6LC-iq-jVI" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="6" id="NDb-SL-Mpt"/>
                             <constraint firstItem="6LC-iq-jVI" firstAttribute="centerY" secondItem="gkf-bX-Izl" secondAttribute="centerY" id="NMl-Bv-0Xz"/>
                             <constraint firstItem="0O9-uP-5Sq" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" constant="-30" id="Rld-iW-yyc"/>
                             <constraint firstItem="MT8-b9-iBi" firstAttribute="centerY" secondItem="I44-rM-Ksn" secondAttribute="centerY" id="TDO-ew-sIn"/>

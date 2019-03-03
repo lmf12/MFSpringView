@@ -33,10 +33,14 @@
     self.springView.springDelegate = self;
     [self.springView updateImage:[UIImage imageNamed:@"girl.jpg"]];
     
-    self.topLineSpace.constant = 200;
-    self.bottomLineSpace.constant = 300;
-    self.currentTop = [self stretchAreaYWithLineSpace:self.topLineSpace.constant];
-    self.currentBottom = [self stretchAreaYWithLineSpace:self.bottomLineSpace.constant];
+    [self setupStretchArea];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self setupStretchArea]; // 这里的计算要用到view的size，所以等待AutoLayout把尺寸计算出来后再调用
+    });
 }
 
 #pragma mark - Private
@@ -59,6 +63,15 @@
     return (lineSpace / self.springView.bounds.size.height - self.springView.textureTopY) / self.springView.textureHeight;
 }
 
+// 设置初始的拉伸区域位置
+- (void)setupStretchArea {
+    self.currentTop = 0.25f;
+    self.currentBottom = 0.75f;
+    CGFloat textureOriginHeight = 0.7f; // 初始纹理占 View 的比例
+    self.topLineSpace.constant = ((self.currentTop * textureOriginHeight) + (1 - textureOriginHeight) / 2) * self.springView.bounds.size.height;
+    self.bottomLineSpace.constant = ((self.currentBottom * textureOriginHeight) + (1 - textureOriginHeight) / 2) * self.springView.bounds.size.height;
+}
+
 #pragma mark - Action
 
 - (void)actionPanTop:(UIPanGestureRecognizer *)pan {
@@ -75,6 +88,7 @@
     [pan setTranslation:CGPointZero inView:self.view];
     
     self.currentTop = [self stretchAreaYWithLineSpace:self.topLineSpace.constant];
+    self.currentBottom = [self stretchAreaYWithLineSpace:self.bottomLineSpace.constant];
 }
 
 - (void)actionPanBottom:(UIPanGestureRecognizer *)pan {
@@ -90,6 +104,7 @@
     self.bottomLineSpace.constant = MIN(self.bottomLineSpace.constant, textureBottom);
     [pan setTranslation:CGPointZero inView:self.view];
     
+    self.currentTop = [self stretchAreaYWithLineSpace:self.topLineSpace.constant];
     self.currentBottom = [self stretchAreaYWithLineSpace:self.bottomLineSpace.constant];
 }
 

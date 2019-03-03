@@ -24,9 +24,9 @@
 /**
  将区域拉伸或压缩为某个高度
 
- @param startY 开始的纵坐标位置
- @param endY 结束的纵坐标位置
- @param newHeight 新的高度
+ @param startY 开始的纵坐标位置（相对于纹理）
+ @param endY 结束的纵坐标位置（相对于纹理）
+ @param newHeight 新的高度（相对于纹理）
  */
 - (void)stretchingFromStartY:(CGFloat)startY
                       toEndY:(CGFloat)endY
@@ -35,35 +35,35 @@
 /**
  纹理顶部的纵坐标 0～1
 
- @return 纹理顶部的纵坐标
+ @return 纹理顶部的纵坐标（相对于 View）
  */
 - (CGFloat)textureTopY;
 
 /**
  纹理底部的纵坐标 0～1
 
- @return 纹理底部的纵坐标
+ @return 纹理底部的纵坐标（相对于 View）
  */
 - (CGFloat)textureBottomY;
 
 /**
  可伸缩区域顶部的纵坐标 0～1
 
- @return 可伸缩区域顶部的纵坐标
+ @return 可伸缩区域顶部的纵坐标（相对于 View）
  */
 - (CGFloat)stretchAreaTopY;
 
 /**
  可伸缩区域底部的纵坐标 0～1
 
- @return 可伸缩区域底部的纵坐标
+ @return 可伸缩区域底部的纵坐标（相对于 View）
  */
 - (CGFloat)stretchAreaBottomY;
 
 /**
  纹理高度 0～1
 
- @return 纹理高度
+ @return 纹理高度（相对于 View）
  */
 - (CGFloat)textureHeight;
 

@@ -227,6 +227,12 @@ typedef struct {
     // 拉伸量
     CGFloat delta = (newHeight - (endY -  startY)) * textureHeight;
     
+    // 判断是否超出最大值
+    if (textureHeight + delta >= 1) {
+        delta = 1 - textureHeight;
+        newHeight = delta / textureHeight + (endY -  startY);
+    }
+    
     // 纹理的顶点
     GLKVector3 pointLT = {-textureWidth, textureHeight + delta, 0};  // 左上角
     GLKVector3 pointRT = {textureWidth, textureHeight + delta, 0};  // 右上角

@@ -6,6 +6,8 @@
 //  Copyright © 2018年 Lyman Li. All rights reserved.
 //
 
+#import <Photos/Photos.h>
+
 #import "MFSpringView.h"
 
 #import "ViewController.h"
@@ -83,6 +85,15 @@
     self.mask.hidden = hidden;
 }
 
+// 保存图片到相册
+- (void)saveImage:(UIImage *)image {
+    [[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+        [PHAssetChangeRequest creationRequestForAssetFromImage:image];
+    } completionHandler:^(BOOL success, NSError * _Nullable error) {
+        NSLog(@"success = %d, error = %@", success, error);
+    }];
+}
+
 #pragma mark - Action
 
 - (void)actionPanTop:(UIPanGestureRecognizer *)pan {
@@ -137,7 +148,8 @@
 }
 
 - (IBAction)saveAction:(id)sender {
-    [self.springView createResult];
+    UIImage *image = [self.springView createResult];
+    [self saveImage:image];
 }
 
 #pragma mark - MFSpringViewDelegate

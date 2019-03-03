@@ -35,6 +35,9 @@
                                     <constraint firstAttribute="height" constant="30" id="t6D-D9-6us"/>
                                 </constraints>
                                 <connections>
+                                    <action selector="sliderDidTouchDown:" destination="BYZ-38-t0r" eventType="touchDown" id="fvN-7o-gPa"/>
+                                    <action selector="sliderDidTouchUp:" destination="BYZ-38-t0r" eventType="touchUpInside" id="EGt-Qn-vXV"/>
+                                    <action selector="sliderDidTouchUp:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="c6Y-iM-go8"/>
                                     <action selector="sliderValueDidChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="2BO-DU-bpF"/>
                                 </connections>
                             </slider>
@@ -119,10 +122,13 @@
                     </view>
                     <connections>
                         <outlet property="bottomButton" destination="WWT-fd-5UE" id="zFh-vT-kPi"/>
+                        <outlet property="bottomLine" destination="0O9-uP-5Sq" id="J56-A0-3lL"/>
                         <outlet property="bottomLineSpace" destination="ujj-eE-Jnf" id="ba0-ps-pCy"/>
+                        <outlet property="mask" destination="Uaf-8i-4Qm" id="sJH-R4-ahx"/>
                         <outlet property="slider" destination="gkf-bX-Izl" id="9zZ-Bb-Gzn"/>
                         <outlet property="springView" destination="Yaz-2V-gwC" id="0P6-HT-2Qf"/>
                         <outlet property="topButton" destination="MT8-b9-iBi" id="XrL-Jx-qBW"/>
+                        <outlet property="topLine" destination="I44-rM-Ksn" id="I13-9A-McX"/>
                         <outlet property="topLineSpace" destination="niP-45-rp1" id="LKQ-9X-Fsd"/>
                     </connections>
                 </viewController>

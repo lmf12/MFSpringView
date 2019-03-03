@@ -18,6 +18,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *topButton;
 @property (weak, nonatomic) IBOutlet UIButton *bottomButton;
 @property (weak, nonatomic) IBOutlet UISlider *slider;
+@property (weak, nonatomic) IBOutlet UIView *topLine;
+@property (weak, nonatomic) IBOutlet UIView *bottomLine;
+@property (weak, nonatomic) IBOutlet UIView *mask;
 
 @property (nonatomic, assign) CGFloat currentTop;  // 上方横线距离纹理顶部的高度
 @property (nonatomic, assign) CGFloat currentBottom;    // 下方横线距离纹理顶部的高度
@@ -72,6 +75,14 @@
     self.bottomLineSpace.constant = ((self.currentBottom * textureOriginHeight) + (1 - textureOriginHeight) / 2) * self.springView.bounds.size.height;
 }
 
+- (void)setViewsHidden:(BOOL)hidden {
+    self.topLine.hidden = hidden;
+    self.bottomLine.hidden = hidden;
+    self.topButton.hidden = hidden;
+    self.bottomButton.hidden = hidden;
+    self.mask.hidden = hidden;
+}
+
 #pragma mark - Action
 
 - (void)actionPanTop:(UIPanGestureRecognizer *)pan {
@@ -115,6 +126,14 @@
     [self.springView stretchingFromStartY:self.currentTop
                                    toEndY:self.currentBottom
                             withNewHeight:newHeight];
+}
+
+- (IBAction)sliderDidTouchDown:(id)sender {
+    [self setViewsHidden:YES];
+}
+
+- (IBAction)sliderDidTouchUp:(id)sender {
+    [self setViewsHidden:NO];
 }
 
 - (IBAction)saveAction:(id)sender {

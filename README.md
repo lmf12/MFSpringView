@@ -1,4 +1,5 @@
 # MFSpringView
+
 基于 OpenGL ES 实现图片局部拉伸功能的控件，可以用来实现长腿功能。
 
 ## 效果展示
@@ -7,7 +8,7 @@
 
 ## 原理
 
-将图片分割为 6 个三角形，如下图所示，然后对中间矩形（V2~V4）进行拉伸或压缩处理。
+将图片分割为 6 个三角形，如下图所示，然后对中间矩形（V2~V5）进行拉伸或压缩处理。
 
 ![](https://github.com/lmf12/MFSpringView/blob/master/image/image1.jpg)
 

@@ -248,24 +248,24 @@ typedef struct {
     GLKVector3 centerPointRB = {textureWidth, endYCoord - delta, 0};  // 右下角
     
     // 纹理的上面两个顶点
-    self.vertices[0].positionCoord = pointRT;
-    self.vertices[0].textureCoord = GLKVector2Make(1, 1);
-    self.vertices[1].positionCoord = pointLT;
-    self.vertices[1].textureCoord = GLKVector2Make(0, 1);
+    self.vertices[0].positionCoord = pointLT;
+    self.vertices[0].textureCoord = GLKVector2Make(0, 1);
+    self.vertices[1].positionCoord = pointRT;
+    self.vertices[1].textureCoord = GLKVector2Make(1, 1);
     // 中间区域的4个顶点
-    self.vertices[2].positionCoord = centerPointRT;
-    self.vertices[2].textureCoord = GLKVector2Make(1, 1 - startY);
-    self.vertices[3].positionCoord = centerPointLT;
-    self.vertices[3].textureCoord = GLKVector2Make(0, 1 - startY);
-    self.vertices[4].positionCoord = centerPointRB;
-    self.vertices[4].textureCoord = GLKVector2Make(1, 1 - endY);
-    self.vertices[5].positionCoord = centerPointLB;
-    self.vertices[5].textureCoord = GLKVector2Make(0, 1 - endY);
+    self.vertices[2].positionCoord = centerPointLT;
+    self.vertices[2].textureCoord = GLKVector2Make(0, 1 - startY);
+    self.vertices[3].positionCoord = centerPointRT;
+    self.vertices[3].textureCoord = GLKVector2Make(1, 1 - startY);
+    self.vertices[4].positionCoord = centerPointLB;
+    self.vertices[4].textureCoord = GLKVector2Make(0, 1 - endY);
+    self.vertices[5].positionCoord = centerPointRB;
+    self.vertices[5].textureCoord = GLKVector2Make(1, 1 - endY);
     // 纹理的下面两个顶点
-    self.vertices[6].positionCoord = pointRB;
-    self.vertices[6].textureCoord = GLKVector2Make(1, 0);
-    self.vertices[7].positionCoord = pointLB;
-    self.vertices[7].textureCoord = GLKVector2Make(0, 0);
+    self.vertices[6].positionCoord = pointLB;
+    self.vertices[6].textureCoord = GLKVector2Make(0, 0);
+    self.vertices[7].positionCoord = pointRB;
+    self.vertices[7].textureCoord = GLKVector2Make(1, 0);
     
     // 保存临时值
     self.currentTextureStartY = startY;

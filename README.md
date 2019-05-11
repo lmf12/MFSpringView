@@ -25,3 +25,7 @@
 但是由于 CoreGraphics 的绘图功能依赖于 CPU ，不断地重绘图像会引起卡顿。
 
 因此，从性能的角度考虑，使用 OpenGL ES 更佳。
+
+## 更多介绍
+
+[使用 iOS OpenGL ES 实现长腿功能](http://www.lymanli.com/2019/03/04/ios-opengles-spring/)

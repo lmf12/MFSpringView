@@ -4,13 +4,13 @@
 
 ## 效果展示
 
-![](https://github.com/lmf12/MFSpringView/blob/master/image/image.gif)
+![](https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/github/MFSpringView/image.gif)
 
 ## 原理
 
 将图片分割为 6 个三角形，如下图所示，然后对中间矩形（V2~V5）进行拉伸或压缩处理。
 
-![](https://github.com/lmf12/MFSpringView/blob/master/image/image1.jpg)
+![](https://lymanli-1258009115.cos.ap-guangzhou.myqcloud.com/image/github/MFSpringView/image1.jpg)
 
 ## 渲染到纹理
 
